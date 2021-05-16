@@ -1,0 +1,1 @@
+疑问：没有componetWillmount后，有一些初始化操作该如何进行，比如layout中获取导航节点的操作
