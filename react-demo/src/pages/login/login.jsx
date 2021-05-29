@@ -4,11 +4,11 @@ import './login.less';
 import { Form, Input, Button } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import {Link, Redirect} from 'react-router-dom'
-import {login} from'../../api/index'
+import {login ,getRoleById} from'../../api/index'
 import { message } from 'antd';
 import memoryUtils from '../../utils/memoryUtils.js';
 import storeUtils from '../../utils/storageUtils'
-
+import MyHeader from '../../components/MyHeader/MyHeader'
 const { Header, Content, Footer } = Layout;
 
 /**
@@ -23,12 +23,15 @@ class Login extends Component {
             'password':values.password
         }
         let res = await login(data)
-        console.log(res.data)
+        // console.log(res.data)
         if(res.data.code===200)
         {
             const user = res.data.data
             //将user保存到内存
             memoryUtils.user= user
+            let res2 = await getRoleById(user.roleId)
+            console.log(res2)
+            memoryUtils.user.authMenus = res2.data.data.menus
             //将user保存到local中
             storeUtils.saveUser(user)
             this.props.history.replace(
@@ -59,7 +62,7 @@ class Login extends Component {
         <div className="login">
         <Layout className="layout">
             <Header className="header">
-              <div className="logo" />
+              <MyHeader/>
             </Header>
             <Content className="content">
                 <Form
@@ -96,22 +99,14 @@ class Login extends Component {
                         placeholder="Password"
                         />
                     </Form.Item>
-                    {/* <Form.Item>
-                        <Form.Item name="remember" valuePropName="checked" noStyle>
-                        <Checkbox>Remember me</Checkbox>
-                        </Form.Item>
 
-                        <span className="login-form-forgot" href="">
-                        Forgot password
-                        </span>
-                    </Form.Item> */}
 
                     <Form.Item>
                         <Button type="primary" htmlType="submit" className="login-form-button">
                         Log in
                         </Button>
                         Or 
-                        <Link to='/regist' style={{color:'blue'}}>
+                        <Link to='/regist' style={{color:'blue',marginLeft:'20px'}}>
                         register now!
                         </Link>
                     </Form.Item>

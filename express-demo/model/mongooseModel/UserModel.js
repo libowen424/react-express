@@ -16,12 +16,5 @@ let UserSchema = new mongoose.Schema({
 //通过connection和schema创建model
 let UserModel = connection.model('users',UserSchema)
 
-UserModel.findOne({username:'admin'}).then(user=>{
-    if(!user)
-    {
-        UserModel.create({username:'admin',password:'admin',roleId:''}).then(user =>{
-            console.log("初始化超级用户admin")
-        })
-    }
-})
+
 module.exports = UserModel 

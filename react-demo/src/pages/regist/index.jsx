@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Layout } from 'antd';
 import './regist.less';
 import {regist} from '../../api/index'
+import {Link} from'react-router-dom'
 import {
     Form,
     Input,
@@ -9,7 +10,8 @@ import {
     Checkbox,
     Button,
   } from 'antd';
-  
+import MyHeader from '../../components/MyHeader/MyHeader'
+
 const { Option } = Select;
 const { Header, Content, Footer } = Layout;
 
@@ -69,7 +71,7 @@ class Regist extends Component {
             <div className="regist">
             <Layout className="layout">
                 <Header className="header">
-                  <div className="logo" />
+                    <MyHeader/>
                 </Header>
                 <Content className="content">
 
@@ -146,64 +148,15 @@ class Regist extends Component {
                         >
                             <Input.Password />
                         </Form.Item>
-{/* 
-                        <Form.Item
-                            name="nickname"
-                            label="Nickname"
-                            tooltip="What do you want others to call you?"
-                            rules={[{ required: true, message: 'Please input your nickname!', whitespace: true }]}
-                        >
-                            <Input />
-                        </Form.Item> */}
-
-
-
-                        {/* <Form.Item
-                            name="phone"
-                            label="Phone Number"
-                            rules={[{ required: true, message: 'Please input your phone number!' }]}
-                        >
-                            <Input addonBefore={this.prefixSelector} style={{ width: '100%' }} />
-                        </Form.Item>
-
-
-                        <Form.Item label="Captcha" extra="We must make sure that your are a human.">
-                            <Row gutter={8}>
-                            <Col span={12}>
-                                <Form.Item
-                                name="captcha"
-                                noStyle
-                                rules={[{ required: true, message: 'Please input the captcha you got!' }]}
-                                >
-                                <Input />
-                                </Form.Item>
-                            </Col>
-                            <Col span={12}>
-                                <Button>Get captcha</Button>
-                            </Col>
-                            </Row>
-                        </Form.Item> */}
-
-                        {/* <Form.Item
-                            name="agreement"
-                            valuePropName="checked"
-                            rules={[
-                            {
-                                validator: (_, value) =>
-                                value ? Promise.resolve() : Promise.reject(new Error('Should accept agreement')),
-                            },
-                            ]}
-                            {...tailFormItemLayout}
-                        >
-                            <Checkbox>
-                            I have read the <a href="">agreement</a>
-                            </Checkbox>
-                        </Form.Item> */}
 
                         <Form.Item {...tailFormItemLayout}>
-                            <Button type="primary" htmlType="submit">
+                            <Button type="primary" htmlType="submit" style={{marginLeft:'20px'}}>
                             Register
                             </Button>
+                            Or 
+                            <Link to='/login' style={{color:'blue'}}>
+                            login now!
+                            </Link>
                         </Form.Item>
                         </Form>
                 </Content>

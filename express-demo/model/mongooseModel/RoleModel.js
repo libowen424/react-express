@@ -18,12 +18,5 @@ let RoleSchema = new mongoose.Schema({
 //通过connection和schema创建model
 let RoleModel = connection.model('role',RoleSchema)
 
-RoleModel.findOne({name:'admin'}).then(user=>{
-    if(!user)
-    {
-        RoleModel.create({name:'admin',menus:['/home','/user','/role'],authName:'',authTime:''}).then(role =>{
-            console.log("初始化超级用户admin")
-        })
-    }
-})
+
 module.exports = RoleModel

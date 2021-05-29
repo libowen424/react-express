@@ -58,12 +58,13 @@ router.post('/getAll',function(req,res,next){
 
 router.post('/getById',function(req,res,next){
     const _id = req.body._id
-    RoleModel.findOne({_id:_id}).then((role)=>[
-        // console.log(roles)
+    // console.log(_id)
+    RoleModel.findOne({_id:_id}).then((role)=>{
+        console.log(role)
         res.json({
             code:200,
             data:role
         })
-    ])
+    })
 })
 module.exports = router;

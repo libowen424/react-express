@@ -3,49 +3,25 @@ import { Table, Tag, Space } from 'antd';
 import { Popconfirm } from 'antd';
 import { QuestionCircleOutlined } from '@ant-design/icons';
 import { Modal, Button } from 'antd';
-import { Descriptions, Badge } from 'antd';
+import { Descriptions } from 'antd';
+import { AppointOrderInterface } from '../../../api';
 
-const { Column, ColumnGroup } = Table;
+const { Column } = Table;
 
-var data = [
-    {
-      key: '1',
-      orderId: '1392145675911540738',
-      userName: 'lbw',
-      time: '2021-05-11 15:52:46',
-      address: '湖北省 武汉市 珞南街道 珞喻路 129号武汉大学',
-      tags: ['待处理'],
-      courierName:'qwq',
-      dateBegin:'2021-05-11 02:00:00',
-      dateEnd:'2021-05-11 03:00:00',
-      isClassify:'已分类',
-      items:'goodsType:金属,goodsWeight:10-15kg;',
-      weight:'2kg',
-      integration:'10积分'
-    },
-    {
-        key: '2',
-        orderId: '1392148089641218050',
-        userName: 'qwq',
-        time: '2021-05-15 11:49:55',
-        address: '湖北省 武汉市 珞南街道 珞喻路 129号武汉大学',
-        tags: ['已完成'],
-        courierName:'lbw',
-        dateBegin:'2021-05-11 02:00:00',
-        dateEnd:'2021-05-11 03:00:00',
-        isClassify:'已分类',
-        items:'goodsType:金属,goodsWeight:10-15kg;',
-        weight:'2kg',
-        integration:'10积分'
-      },
-  ];
 
 class AppointOrder extends Component {
 
+    constructor()
+    {
+        super()
+        this.state={
+            allAppointOrders:[]
+        }
+    }
 
     showDetail=(order,record)=>
     {
-        const {orderId,userName,time,address,tags,courierName,dateBegin,dateEnd,isClassify,items,weight,integration} = order
+        const {orderId,senderName,time,addrNo,senderAddress,orderStatus,courierName,senderDateBegin,senderDateEnd,isClassified,items,senderWeight,integration} = order
         // console.log(order,record)
         Modal.info({
             width:'800',
@@ -53,20 +29,21 @@ class AppointOrder extends Component {
             content: (
                 <Descriptions bordered  extra={<Button type="primary">Edit</Button>}  >
                     <Descriptions.Item label="orderId">{orderId}</Descriptions.Item>
-                    <Descriptions.Item label="userName">{userName}</Descriptions.Item>
+                    <Descriptions.Item label="userName">{senderName}</Descriptions.Item>
                     <Descriptions.Item label="time">{time}</Descriptions.Item>
-                    <Descriptions.Item label="address">{address}</Descriptions.Item>
+                    <Descriptions.Item label="addrNo">{addrNo}</Descriptions.Item>
+                    <Descriptions.Item label="senderAddress">{senderAddress}</Descriptions.Item>
                     <Descriptions.Item label="courierName" >
                     {courierName}
                     </Descriptions.Item>
-                    <Descriptions.Item label="dateBegin">
-                    {dateBegin}
+                    <Descriptions.Item label="senderDateBegin">
+                    {senderDateBegin}
                     </Descriptions.Item>
-                    <Descriptions.Item label="dateEnd">{dateEnd}</Descriptions.Item>
-                    <Descriptions.Item label="isClassify">{isClassify}</Descriptions.Item>
-                    <Descriptions.Item label="items" span={3}>{items}</Descriptions.Item>
-                    <Descriptions.Item label="weight">
-                    {weight}
+                    <Descriptions.Item label="senderDateEnd">{senderDateEnd}</Descriptions.Item>
+                    <Descriptions.Item label="isClassified">{isClassified==0?'未分类':'已分类'}</Descriptions.Item>
+                    <Descriptions.Item label="items">{items}</Descriptions.Item>
+                    <Descriptions.Item label="senderWeight">
+                    {senderWeight}
                     </Descriptions.Item>
                     <Descriptions.Item label="integration">
                     {integration}
@@ -78,34 +55,48 @@ class AppointOrder extends Component {
     }
 
 
-    confirmDelete(text)
+    confirmFinish=async(text)=>
     {
-        console.log('delete',text)
+        // console.log('delete',text)
         // data.unshift()
+       await AppointOrderInterface(null,null,null,null,null,null,text.orderId,3,null,null,null,null,null,null,null,null,null,null,'update')
+        this.getAllAppointOrders()
+    }
+    getAllAppointOrders=async ()=>{
+        let res = await AppointOrderInterface(null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,'getAll')
+        // console.log('@',res.data.data)
+        this.setState(
+            (state,props)=>{
+                return {allAppointOrders:res.data.data.value}
+            }
+        )
+    }
+    componentDidMount()
+    {
+        this.getAllAppointOrders()
     }
     render() {
+        const {allAppointOrders} = this.state
         return (
             <>
-                  <Table   dataSource={data}>
+                  <Table dataSource={allAppointOrders}>
                     <Column title="订单id" dataIndex="orderId" key="orderId" />
-                    <Column title="用户名" dataIndex="userName" key="userId" />
+                    <Column title="用户名" dataIndex="senderName" key="senderName" />
                     <Column title="下单时间" dataIndex="time" key="time" />
                     <Column
                         title="状态"
-                        dataIndex="tags"
-                        key="tags"
-                        render={tags => (
+                        dataIndex="orderStatus"
+                        key="orderStatus"
+                        render={orderStatus => (
                             <>
-                            {tags.map(tag => (
-                                <Tag color={tag=='待处理'?'blue':'green'} key={tag}>
-                                {tag}
+                                <Tag color={orderStatus==0?'red':orderStatus==1?'orange':orderStatus==2?'blue':'green'} key={orderStatus}>
+                                {orderStatus==0?'待接收':orderStatus==1?'已接收':orderStatus==2?'处理中':'已完成'}
                                 </Tag>
-                            ))}
                             </>
                         )}
                         />
-                    <Column title="上门地址" dataIndex="address" key="address" />
-                    <Column title="骑手名" dataIndex="courierName" key="courierName" />
+                    <Column title="上门地址" dataIndex="senderAddress" key="senderAddress" />
+                    <Column title="用户电话" dataIndex="senderTel" key="senderTel" />
                     <Column
                         title="Action"
                         key="action"
@@ -113,9 +104,9 @@ class AppointOrder extends Component {
                             <Space size="middle">
                             <a onClick={()=>{this.showDetail(text,record)}}>详情</a>
                             
-                            <Popconfirm title="Are you sure？"     onConfirm={()=>{this.confirmDelete(text)}}
+                            <Popconfirm title="Are you sure？"     onConfirm={()=>{this.confirmFinish(text)}}
  icon={<QuestionCircleOutlined style={{ color: 'red' }} />}>
-                                <a href="#">Delete</a>
+                                <a>完成</a>
                             </Popconfirm>
                             </Space>
                         )}

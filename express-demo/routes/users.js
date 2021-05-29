@@ -124,7 +124,7 @@ router.post('/auth',function(req,res,next){
     roleId:req.body.roleId
   }
   console.log(data)
-  UserModel.updateOne({_id:data.userId},{roleId:data.roleId}).then((res)=>{
+  UserModel.updateOne({_id:data.userId},{roleId:data.roleId}).then((result)=>{
     // console.log(res)
     res.json({
       code:200,
